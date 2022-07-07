@@ -12,7 +12,7 @@ const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async
   try {
 
     const product = await ProductService.getProductById(productId);
-console.log(product);
+//console.log(product);
     if(product){
       console.log(`"Received product: ${ JSON.stringify( product ) }`);
       return successResponse(product, 200)
