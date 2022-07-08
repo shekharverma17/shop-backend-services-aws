@@ -76,21 +76,17 @@ describe('Hello Handler', () => {
     const context = {} as Context;
     const callback = null as Callback;
 
-        try {
-           // const addListenerMock = getProducts as jest.MockedFunction<typeof getProducts>;
-           // const mockFnReturnValueOnce = mockDBfunction("getProducts", true);
-           // console.log(mockFnReturnValueOnce);
-           // addListenerMock.mockReturnValueOnce(Promise.resolve(mockFnReturnValueOnce));
-        
-                const result = await handler(event, context, callback);
-               // const response = JSON.parse(result.body);
-               //expect(result.statusCode).toEqual(500);
-          } catch (e) {
-            console.log("e=====",e);
-            expect(e.statusCode).toEqual(500);
-            //expect(result.body).toBe('{"message":"Product not found"}');
-    
-          }
+    const addListenerMock = getProducts as jest.MockedFunction<typeof getProducts>;
+    const mockFnReturnValueOnce = mockDBfunction("getProducts", true);
+   console.log(mockFnReturnValueOnce);
+ //  addListenerMock.mockReturnValueOnce(Promise.resolve(mockFnReturnValueOnce));
+   addListenerMock.mockImplementation(() => {
+    throw new Error("db error!");
+  });
+        const result = await handler(event, context, callback);
+       // const response = JSON.parse(result.body);
+       expect(result.statusCode).toEqual(500);
+       expect(result.body).toBe('{"message":"db error!"}');
 
   });
 });

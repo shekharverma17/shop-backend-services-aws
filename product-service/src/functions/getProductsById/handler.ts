@@ -1,9 +1,10 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
-import { middyfy } from '@libs/lambda';
+import { middyfy } from '../../libs/lambda';
 import { ProductServiceInterface } from "../../services/products";
 import { ProductServices } from "../../services/product-service";
 import schema from './schema';
-const ProductService: ProductServiceInterface = new ProductServices(); 
+//const ProductService: ProductServiceInterface = new ProductServices(); 
+import { getProductById } from '../../services/product-service'
 import { errorResponse, successResponse } from "../../utils/apiResponseBuilder";
 
 const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
@@ -11,10 +12,10 @@ const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async
 
   try {
 
-    const product = await ProductService.getProductById(productId);
+    const product = await getProductById(productId);
 //console.log(product);
     if(product){
-      console.log(`"Received product: ${ JSON.stringify( product ) }`);
+     // console.log(`"Received product: ${ JSON.stringify( product ) }`);
       return successResponse(product, 200)
     }
 
