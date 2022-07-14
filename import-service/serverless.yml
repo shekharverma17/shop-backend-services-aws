@@ -1,0 +1,33 @@
+service: import-service
+
+provider: 
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  deploymentBucket: node-js-aws-s3-task5
+  # profile: 
+
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action: s3:ListBucket
+      Resource:
+        - "arn:aws:s3:::node-js-aws-s3-task5"
+    - Effect: Allow
+      Action:
+        - "s3:*"
+      Resource:
+        - "arn:aws:s3:::node-js-aws-s3-task5/*"
+
+functions:
+  importProductsFile:
+    handler: handler.importProductsFile
+    events:
+      - http:
+          path: import
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                name: true
