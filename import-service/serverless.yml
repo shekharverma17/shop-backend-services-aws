@@ -19,7 +19,19 @@ provider:
       Resource:
         - "arn:aws:s3:::node-js-aws-s3-task5/*"
 
+
 functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: import
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                name: true
   importProductsFile:
     handler: handler.importProductsFile
     events:
