@@ -1,21 +1,17 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import { middyfy } from '../../libs/lambda';
-import { ProductServiceInterface } from "../../services/products";
-import { ProductServices } from "../../services/product-service";
 import schema from './schema';
-//const ProductService: ProductServiceInterface = new ProductServices(); 
-import { getProductById } from '../../services/product-service'
+import { fetchProductById } from '../../services/product-service'
 import { errorResponse, successResponse } from "../../utils/apiResponseBuilder";
 
 const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+  console.log("Lambda invocation with event: ", JSON.stringify(event));
   const { productId } = event.pathParameters;
 
   try {
-
-    const product = await getProductById(productId);
-//console.log(product);
+    const product = await fetchProductById(productId);
     if(product){
-     // console.log(`"Received product: ${ JSON.stringify( product ) }`);
+      console.log(`"Received product: ${ JSON.stringify( product ) }`);
       return successResponse(product, 200)
     }
 
@@ -23,8 +19,7 @@ const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async
     return successResponse( { message: "Product not found" }, 404 );
     
     }catch (error) {
-
-	    console.log(error)
+      console.log(error)
       return errorResponse(error, 500)
     }
 };

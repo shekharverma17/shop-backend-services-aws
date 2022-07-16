@@ -1,12 +1,15 @@
 import { ProductServiceInterface, ProductInterface } from './products';
-import products from './products-data.json';
+import { products } from './products-data.json';
 class ProductServices implements ProductServiceInterface {
-    getProductById(id: string) {
-        return Promise.resolve(products.find( product => product.id === parseInt(id) ));
+    fetchProductById(id: string) {
+        console.log("===id=", id);
+      // console.log(products);
+        //console.log(products.find( product => product.id === "1"));
+        return Promise.resolve(products.find( product => product.id === id));
     }
     
     getProducts() {
-        console.log("called ===orignal===")
+        console.log("called ===orignal===1")
         //const error = new Error("message")
         //error.statusCode = 500
        // throw error;
@@ -17,5 +20,5 @@ class ProductServices implements ProductServiceInterface {
         //return Promise.reject('No Token Found In Local Storage')
     }
 }
-export const { getProductById, getProducts } = new ProductServices()
+export const { fetchProductById, getProducts } = new ProductServices()
 export { ProductServices };
