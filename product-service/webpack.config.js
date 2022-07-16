@@ -6,6 +6,9 @@ module.exports = {
     path.join(__dirname, 'browser.js')
   ],
   target: "node",
+  resolve: {
+    extensions: ['.js', '.jsx', '.json'],
+  },
   // Specify the output file containing our bundled code
   output: {
     path: __dirname,
@@ -26,7 +29,7 @@ module.exports = {
       {
         loaders: 'babel-loader',
         test: /\.json$/, 
-        loaders: ['json']
+        //loaders: ['json']
       }
     ]
   }
