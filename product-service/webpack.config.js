@@ -1,18 +1,20 @@
 // Import path for resolving file paths
 var path = require('path');
-
-//const slsw = require('serverless-webpack');
 module.exports = {
   // Specify the entry point for our app.
   entry: [
-    path.join(__dirname, 'package.json')
+    path.join(__dirname, 'browser.js')
   ],
-  //entry: slsw.lib.entries,
+  target: "node",
   // Specify the output file containing our bundled code
   output: {
     path: __dirname,
     filename: 'bundle.js'
   },
+  devServer: {
+    inline: false,
+    contentBase: "./dist",
+},
   module: {
     /**
       * Tell webpack how to load 'json' files. 
@@ -22,45 +24,10 @@ module.exports = {
       */
     loaders: [
       {
+        loaders: 'babel-loader',
         test: /\.json$/, 
         loaders: ['json']
       }
     ]
   }
 }
-
-// module.exports = {
-//     //entry: slsw.lib.entries,
-//     target: 'node',
-//     mode: "production",
-//     loader: 'babel-loader',
-//     devServer: {
-//         inline: false,
-//         contentBase: "./dist",
-//     },
-//     module: {
-//         rules: [ ]
-//       },
-//   };
-
-
-// const slsw = require('serverless-webpack');
-// module.exports = {
-//   target: 'node',
-//   entry: slsw.lib.entries,
-//   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
-//   node: false,
-//   optimization: {
-//     minimize: false,
-//   },
-//   loader: 'babel-loader',
-//   module:{
-//     rules:[{
-//         loader: 'babel-loader',
-//         test: '/\.(js|jsx)$/',
-//         exclude: '/node_modules/'
-//     }]
-// },
-//   devtool: 'inline-cheap-module-source-map',
-// };
-
