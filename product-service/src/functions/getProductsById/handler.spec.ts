@@ -34,7 +34,6 @@ describe('Verify getProductsById Handler', () => {
 
       expect(result.statusCode).toEqual(404);
       expect(result.body).toBe('{"message":"Product not found"}');
-
   });
 
   it('Should return error', async () => {

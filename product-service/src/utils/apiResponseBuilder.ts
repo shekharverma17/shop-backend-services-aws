@@ -28,7 +28,7 @@ const successResponse = ( body: Object, statusCode: number = 200 ): ResponseInte
         headers: {
             ...defaultHeaders
         },
-        body: JSON.stringify( { message: err.message || 'Something went wrong !!!' })
+        body: JSON.stringify( { message: err.message || 'Internal Server Error' })
     }
 }
 

@@ -15,7 +15,7 @@ const getProductsList: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async
     }
 
     console.log(`Product not found`, products);
-    return successResponse( { message: "Product not found" }, 404 )
+    return successResponse({"message":"Product not found"}, 404 )
     
     }catch (error) {
 	    console.log(error)
