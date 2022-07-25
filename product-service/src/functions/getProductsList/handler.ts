@@ -6,7 +6,6 @@ import { errorResponse, successResponse } from "../../utils/apiResponseBuilder";
 
 const getProductsList: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   console.log("Lambda invocation with event: ", JSON.stringify(event));
-
   try {
 
     const products = await getProducts();
@@ -14,11 +13,11 @@ const getProductsList: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async
       return successResponse(products, 200)
     }
 
-    console.log(`Product not found`, products);
+    console.log("Lambda getProductsList error: ", JSON.stringify({"message":"Product not found"}));
     return successResponse({"message":"Product not found"}, 404 )
     
     }catch (error) {
-	    console.log(error)
+	    console.log("Lambda getProductsList error: ", JSON.stringify(error));
       return errorResponse(error, 500)
     }
 };

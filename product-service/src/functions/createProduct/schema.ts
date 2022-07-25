@@ -5,6 +5,11 @@ export default {
     description: { type: 'string' },
     price: { type: 'number' },
   },
-  required: ['title']
+  required: ['title', 'description', 'price']
 } as const;
-//'{"body":{"title":"Oneplus Nord","description":"A oneplus mobile which is nothing like apple","price": 99}'
+
+export interface CreateProductRequest{
+  title: string,
+  description: string,
+  price: number,
+}

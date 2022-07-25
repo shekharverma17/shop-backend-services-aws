@@ -1,40 +1,51 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import { middyfy } from '../../libs/lambda';
-import { ProductServiceInterface } from "../../services/products";
-import { ProductServices } from "../../services/product-service";
-import schema from './schema';
-//const ProductService: ProductServiceInterface = new ProductServices(); 
+import schema, { CreateProductRequest } from './schema';
 import { createProductService } from '../../services/product-service'
 import { errorResponse, successResponse } from "../../utils/apiResponseBuilder";
 
-//serverless invoke local --function createProductHandler --data '{"body":{"title":"Oneplus Nord","description":"A oneplus mobile which is nothing like apple","price": 99}'
-const createProductHandler: ValidatedEventAPIGatewayProxyEvent<any> = async (event) => {
-  const request  = event.body;
-  console.log(event);
+const createProductHandler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+  console.log(`Request for create product. Product Data: ${JSON.stringify(event)}`)
+  if(false === validateRequest(event))
+  {
+    return errorResponse(new Error("Product data is invalid!"), 400)
+  }
+  const request  = event.body as CreateProductRequest
+
   const productData = {
     title: request.title,
     description: request.description,
     price: request.price,
-  };
-  //TODO validate req
+  }
 
   try {
 
     const product = await createProductService(productData);
-//console.log(product);
     if(product){
-     // console.log(`"Received product: ${ JSON.stringify( product ) }`);
       return successResponse(product, 200)
     }
 
-    console.log(`Product not found`);
+    console.log("Lambda createProductHandler error: ", JSON.stringify({ message: "Product not found" }))
     return successResponse( { message: "Product not found" }, 404 );
     
     }catch (error) {
-
-	    console.log(error)
+      console.log("Lambda createProductHandler error: ", JSON.stringify(error))
       return errorResponse(error, 500)
     }
 };
 
+const validateRequest = (request) =>{
+  if(!request.body || Object.keys(request.body).length === 0) return false
+  if(!request.body.title || request.body.title === '') return false
+  if (!request.body.title || typeof request.body.title != 'string' || request.body.title.length === 0) {
+    return false
+  }
+  if (!request.body.description || typeof request.body.description != 'string' || request.body.description.length === 0) {
+    return false
+  }
+  if (!request.body.price || typeof request.body.price != 'number') {
+    return false
+  }
+  return true;
+}
 export const main = middyfy(createProductHandler);

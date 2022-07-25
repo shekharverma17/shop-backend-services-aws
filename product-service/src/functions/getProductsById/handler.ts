@@ -15,11 +15,11 @@ const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async
       return successResponse(product, 200)
     }
 
-    console.log(`Product not found`);
+    console.log("Lambda getProductsById invocation error: ", JSON.stringify({"message":"Product not found"}));
     return successResponse({"message":"Product not found"}, 404 );
     
     }catch (error) {
-      console.log(error)
+      console.log("Lambda getProductsById invocation error: ", JSON.stringify(error));
       return errorResponse(error, 500)
     }
 };
