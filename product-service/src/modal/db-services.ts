@@ -24,7 +24,8 @@ class DBServices implements DBServicesInterface {
 
       async query(){
         try {
-           const result = await dbQuery("select * from products")
+           const result = await dbQuery(`SELECT p.id, p.title, p.description, p.price, s.count FROM products p, stocks s 
+           WHERE p.id=s.product_id`)
            return Promise.resolve(result);
           } catch (error) {
             return Promise.reject(error);

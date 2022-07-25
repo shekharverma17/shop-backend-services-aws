@@ -37,10 +37,13 @@ async function dbQuery(q) {
   async function createDBQuery({title, description, price}) {
     const client = await DBconnect()
     let result
+    const count = 5;
     try {
       await client.query('BEGIN')
       try {
         result = await client.query(`INSERT INTO products (title, description, price) VALUES ($1, $2, $3) RETURNING *`, [title, description, price])
+        const { rows } = result
+        await client.query(`INSERT INTO stocks (product_id, count) VALUES ($1, $2) RETURNING *`, [rows[0].id, count])
         await client.query('COMMIT')
       } catch (error) {
         await client.query('ROLLBACK')
