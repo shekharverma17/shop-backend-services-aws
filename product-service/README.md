@@ -4,7 +4,9 @@
 
 ### API endpoints:
   GET - https://af3dyix2oc.execute-api.us-east-1.amazonaws.com/dev/products
+  
   GET - https://af3dyix2oc.execute-api.us-east-1.amazonaws.com/dev/products/{productId}
+  
   POST - https://af3dyix2oc.execute-api.us-east-1.amazonaws.com/dev/products/create
 
 This project has been generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/).
