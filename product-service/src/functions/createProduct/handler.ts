@@ -38,10 +38,10 @@ const createProductHandler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = 
 const validateRequest = (request) =>{
   if(!request.body || Object.keys(request.body).length === 0) return false
   if(!request.body.title || request.body.title === '') return false
-  if (!request.body.title || typeof request.body.title != 'string' || request.body.title.length === 0) {
+  if (!request.body.title || typeof request.body.title != 'string') {
     return false
   }
-  if (!request.body.description || typeof request.body.description != 'string' || request.body.description.length === 0) {
+  if (!request.body.description || typeof request.body.description != 'string') {
     return false
   }
   if (!request.body.price || typeof request.body.price != 'number') {

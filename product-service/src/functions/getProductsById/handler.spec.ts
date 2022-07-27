@@ -1,35 +1,35 @@
 import { Context, Callback } from 'aws-lambda';
 import { main as handler } from './handler';
-import { fetchProductById } from '../../services/product-service'
+import { getProductById } from '../../services/product-service'
 import { mockDBfunction } from '../mock'
 
 const event = {
   pathParameters: {
-      productId: "1"
+      productId: "27e70fdb-bb05-4dec-a993-24cd96de19a6"
   }
 } as any
 const context = {} as Context;
 const callback = null as Callback;
 
 jest.mock('../../services/product-service', () => ({
-  fetchProductById: jest.fn(),
+  getProductById: jest.fn(),
 }));
-const fetchProductByIdMock = fetchProductById as jest.MockedFunction<typeof fetchProductById>
+const fetchProductByIdMock = getProductById as jest.MockedFunction<typeof getProductById>
 
 describe('Verify getProductsById Handler', () => {
   it('Should return product object', async () => {
-        const mockFnReturnValueOnce = mockDBfunction("fetchProductById", false, false, "1");
+        const mockFnReturnValueOnce = mockDBfunction("fetchProductById", false, false, "27e70fdb-bb05-4dec-a993-24cd96de19a6");
         fetchProductByIdMock.mockReturnValueOnce(Promise.resolve(mockFnReturnValueOnce));        
         const result = await handler(event, context, callback);
         const response = JSON.parse(result.body);
 
         expect(result.statusCode).toEqual(200);
-        expect(typeof response).toBe('object');
-        expect(response.id).toEqual("1");
+        expect(typeof response[0]).toBe('object');
+        expect(response[0].id).toEqual("27e70fdb-bb05-4dec-a993-24cd96de19a6");
 
   });
   it('Should return empty record 404', async () => {
-      fetchProductByIdMock.mockReturnValueOnce(Promise.resolve(null));
+      fetchProductByIdMock.mockReturnValueOnce(Promise.resolve([]));
       const result = await handler(event, context, callback);
 
       expect(result.statusCode).toEqual(404);
