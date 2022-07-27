@@ -34,10 +34,9 @@ async function dbQuery(q) {
     return res
   }
 
-  async function createDBQuery({title, description, price}) {
+  async function createDBQuery({title, description, price, count}) {
     const client = await DBconnect()
     let result
-    const count = 5;
     try {
       await client.query('BEGIN')
       try {

@@ -16,17 +16,18 @@ const createProductHandler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = 
     title: request.title,
     description: request.description,
     price: request.price,
+    count: request.count
   }
 
   try {
 
     const product = await createProductService(productData);
-    if(product){
+    if(product.length){
       return successResponse(product, 200)
     }
 
-    console.log("Lambda createProductHandler error: ", JSON.stringify({ message: "Product not found" }))
-    return successResponse( { message: "Product not found" }, 404 );
+    console.log("Lambda createProductHandler error: ", JSON.stringify({ message: "Product data is invalid!" }))
+    return errorResponse(new Error("Product data is invalid!"), 400)
     
     }catch (error) {
       console.log("Lambda createProductHandler error: ", JSON.stringify(error))
@@ -44,6 +45,9 @@ const validateRequest = (request) =>{
     return false
   }
   if (!request.body.price || typeof request.body.price != 'number') {
+    return false
+  }
+  if (!request.body.count || typeof request.body.count != 'number') {
     return false
   }
   return true;
