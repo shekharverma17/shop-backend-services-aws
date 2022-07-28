@@ -6,11 +6,11 @@ import schema from './schema';
 import { errorResponse, successResponse } from "../../../src/utils/responseBuilder";
 import AWS from 'aws-sdk';
 const s3 = new AWS.S3({ region: 'us-east-1' });
-const BUCKET = 'node-js-aws-s3-task5-test123'
-var AWSMock = require('mock-aws-s3');
+const BUCKET = 'node-js-aws-s3-task5'
+//var AWSMock = require('mock-aws-s3');
 //serverless invoke local --function importProductsFile --data '{ "queryStringParameters": {"name":"product.csv"}}'
 const importProductsFile: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
-
+   // serverless invoke local --function importProductsFile --data '{ "queryStringParameters": {"name":"product.csv"}}'
   try {
       
     const filename = event.queryStringParameters.name
