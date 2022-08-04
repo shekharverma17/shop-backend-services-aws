@@ -5,6 +5,6 @@ module.exports = {
   coverageProvider: "babel",
   testEnvironment: "node",
   testMatch: [
-    "**/functions/**/**/*.test.ts" //"**/unit/**/*.test.ts"
+    "**/*.test.ts" 
   ],
 };
