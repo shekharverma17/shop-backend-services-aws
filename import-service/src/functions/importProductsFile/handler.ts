@@ -7,6 +7,7 @@ const s3 = new AWS.S3({ region: 'us-east-1' });
 const BUCKET = 'node-js-aws-s3-task5'
 
 const importProductsFile: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+  console.log(`Lambda invocation with: ${JSON.stringify(event)}`);
   try {
       
     const filename = event.queryStringParameters.name
@@ -19,9 +20,11 @@ const importProductsFile: ValidatedEventAPIGatewayProxyEvent<typeof schema> = as
         ContentType: 'text/csv'
     };
     const url = await s3.getSignedUrlPromise('putObject', params)
-   
+    console.log(`URL: ${JSON.stringify(url)}`)
     return successResponse(url);
+    
 } catch (error) {
+    console.log(`ERROR: ${JSON.stringify(error)}`)
     return errorResponse(error);
 }
 
