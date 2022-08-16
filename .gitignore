@@ -1,2 +1,8 @@
 import-service/node_modules/**
 import-service/node_modules/
+product-services-old/**
+shop-service/**
+
+task-4/.DS_Store
+product-service/coverage/**
+import-service/.serverless/cloudformation-template-update-stack.json
