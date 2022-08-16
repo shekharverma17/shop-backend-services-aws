@@ -5,4 +5,5 @@ shop-service/**
 
 task-4/.DS_Store
 product-service/coverage/**
+import-service/.serverless/**
 import-service/.serverless/cloudformation-template-update-stack.json
