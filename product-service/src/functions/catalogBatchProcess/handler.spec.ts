@@ -1,93 +1,91 @@
-import type { Context, Callback } from 'aws-lambda';
+import { Context, Callback } from 'aws-lambda';
 import { main as handler } from './handler';
 import { getProductById } from '../../services/product-service'
 import { mockDBfunction } from '../mock'
 // Import mock function from mock.js
-
+import { createProductService } from '../../services/product-service'
 jest.mock('../../services/product-service', () => ({
     getProductById: jest.fn(),
 }));
+
+const context = {} as Context;
+const callback = null as Callback;
+jest.mock('../../services/product-service', () => ({
+  createProductService: jest.fn(),
+}));
+const createProductServiceMock = createProductService as jest.MockedFunction<typeof createProductService>
+
+// const mockSNSPublish = jest.fn();
+// jest.mock('aws-sdk', () => {
+//   return {
+//     SNS: jest.fn(() => ({
+//       publish: mockSNSPublish,
+//     })),
+//   };
+// });
+
+const mockSnsSend = jest.fn();
+jest.mock('@aws-sdk/client-sns', () => ({
+  SNSClient: jest.fn(() => ({
+    send: mockSnsSend
+  })),
+  PublishCommand: function(){
+    return jest.fn().mockImplementation(function () {
+    })
+  }
+})
+);
+
+const mockedSQSRecords = [
+  {
+    body: '{"title":1}',
+  },
+  {
+    body: '{"title":2}',
+  },
+  {
+    body: '{"title":3}',
+  },
+];
+
 describe('Hello Handler', () => {
-  it('should pass with mocked post request', async () => {
-    // const event = {
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: '{"name": "Frederic"}',
-    // };
-    const context = {} as Context;
-    const callback = null as Callback;
-    //const addListenerMock = getProductById as jest.MockedFunction<typeof getProductById>;
-   // const mockFnReturnValueOnce = mockDBfunction("getProductById");
-    //addListenerMock.mockReturnValueOnce(Promise.resolve(mockFnReturnValueOnce));
+  it('should return status code 200', async () => {
+    const sqsEvent = {
+      Records: mockedSQSRecords,
+    } as any;
 
-    // try {
-        const event = {
-            pathParameters: {
-                productId: 1
-            }
-        } as any
+    // mockSNSPublish.mockImplementation((_params) => ({
+    //   promise() {
+    //     return Promise.resolve();
+    //   },
+    // }));
+    const mockFnReturnValueOnce = mockDBfunction("fetchProductById", false, false, "27e70fdb-bb05-4dec-a993-24cd96de19a6");
+    createProductServiceMock.mockReturnValueOnce(Promise.resolve(mockFnReturnValueOnce));        
+    const resultFromHandler = await handler(sqsEvent, context, callback);
 
-        const result = await handler(event, context, callback);
-        const response = JSON.parse(result.body);
-        console.log("response===", response);
+    if (resultFromHandler) {
+      const { statusCode } = resultFromHandler;
 
-        
-           // expect(Array.isArray(response)).toBe(true);
-           expect(typeof response).toBe('object');
-           //expect(response.id).toEqual(1);
-          // expect(response.title).toEqual("Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops");
-            //expect(response.length).toBeGreaterThanOrEqual(1);  
-
-        
- 
-
-  });
-  it('should return empty records', async () => {
-    const event = {
-        pathParameters: {
-            productId: 99
-        }
-    } as any
-    const context = {} as Context;
-    const callback = null as Callback;
-   // const addListenerMock = getProducts as jest.MockedFunction<typeof getProducts>;
-   // const mockFnReturnValueOnce = mockDBfunction("getProducts", false, true);
-    //addListenerMock.mockReturnValueOnce(Promise.resolve(mockFnReturnValueOnce));
-
-        const result = await handler(event, context, callback);
-       // const response = JSON.parse(result.body);
-       // console.log(result);
-        expect(result.statusCode).toEqual(404);
-        expect(result.body).toBe('{"message":"Product not found"}');
-
-
+      expect(statusCode).toEqual(200);
+      expect(mockSnsSend).toBeCalled();
+    }
   });
 
-  it('Error', async () => {
-    //jest.clearAllMocks();
-    
-    const event = {
-        pathParameters: {
-            productId: "1"
-        }
-    } as any
-    const context = {} as Context;
-    const callback = null as Callback;
+  it('should call sns.publish method', async () => {
+    const sqsEvent = {
+      Records: mockedSQSRecords,
+    } as any;
 
+    // mockSNSPublish.mockImplementation((_params) => ({
+    //   promise() {
+    //     return Promise.resolve();
+    //   },
+    // }));
 
-            const addListenerMock = getProductById as jest.MockedFunction<typeof getProductById>;
-         //   const mockFnReturnValueOnce = mockDBfunction("getProducts", true);
-           //console.log(mockFnReturnValueOnce);
-         //  addListenerMock.mockReturnValueOnce(Promise.resolve(mockFnReturnValueOnce));
-           addListenerMock.mockImplementation(() => {
-            throw new Error("db error2!");
-          });
-                const result = await handler(event, context, callback);
-               // const response = JSON.parse(result.body);
-               //expect(result.statusCode).toEqual(500);
-    
-               expect(result.statusCode).toEqual(500);
-               expect(result.body).toBe('{"message":"db error2!"}');
-               jest.clearAllMocks()
+    const resultFromHandler = await handler(sqsEvent, context, callback);
 
+    if (resultFromHandler) {
+      expect(mockSnsSend).toBeCalled();
+    }
   });
 });
