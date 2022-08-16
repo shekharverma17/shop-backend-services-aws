@@ -87,7 +87,7 @@
             },
         ]
         // Mock success output
-        return mockedData.find( product => product.id === id);
+        return mockedData.filter( product => product.id === id);
       };
 
   // Mock function which returns the data for each fucntion

@@ -9,6 +9,6 @@ export interface ProductInterface {
 }
 
 export interface ProductServiceInterface {
-    getProductById: (id: string) => Promise<ProductInterface>,
+    fetchProductById: (id: string) => Promise<ProductInterface>,
     getProducts: () => Promise<ProductInterface[]>
 }
