@@ -162,6 +162,13 @@
                   "Resource": [
                     "*"
                   ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:*"
+                  ],
+                  "Resource": "arn:aws:sqs:us-east-1:003374823954:catalogItemsQueue"
                 }
               ]
             }
@@ -190,7 +197,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/import-service-test123/dev/1659012283704-2022-07-28T12:44:43.704Z/importProductsFile.zip"
+          "S3Key": "serverless/import-service-test123/dev/1660660665503-2022-08-16T14:37:45.503Z/importProductsFile.zip"
         },
         "Handler": "src/functions/importProductsFile/handler.main",
         "Runtime": "nodejs14.x",
@@ -200,7 +207,8 @@
         "Environment": {
           "Variables": {
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-            "NODE_OPTIONS": "--enable-source-maps --stack-trace-limit=1000"
+            "NODE_OPTIONS": "--enable-source-maps --stack-trace-limit=1000",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/003374823954/catalogItemsQueue"
           }
         },
         "Role": {
@@ -221,7 +229,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/import-service-test123/dev/1659012283704-2022-07-28T12:44:43.704Z/importFileParser.zip"
+          "S3Key": "serverless/import-service-test123/dev/1660660665503-2022-08-16T14:37:45.503Z/importFileParser.zip"
         },
         "Handler": "src/functions/importFileParser/handler.main",
         "Runtime": "nodejs14.x",
@@ -231,7 +239,8 @@
         "Environment": {
           "Variables": {
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-            "NODE_OPTIONS": "--enable-source-maps --stack-trace-limit=1000"
+            "NODE_OPTIONS": "--enable-source-maps --stack-trace-limit=1000",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/003374823954/catalogItemsQueue"
           }
         },
         "Role": {
@@ -245,24 +254,24 @@
         "ImportFileParserLogGroup"
       ]
     },
-    "ImportProductsFileLambdaVersionhcXwpQWKJp31OQMtOqKonqmqfl0EVvF8imFiL0Qmg": {
+    "ImportProductsFileLambdaVersion8kar5seMUP3Bg5943GEUDTPRZFHvRBecxULFEyVV0k": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ImportProductsFileLambdaFunction"
         },
-        "CodeSha256": "driIoRwFme88jVOg4P8rL+OS4Mzua5PCHEh4kDLVHwo="
+        "CodeSha256": "1HslZxov4nhnIQePFa42bRY8l7VQwvwVqP9Ihh3/r2U="
       }
     },
-    "ImportFileParserLambdaVersion3g56Hr8eZ2eWsJAi0v3zPHNM0T4ukrqZOJmalqZ3pE": {
+    "ImportFileParserLambdaVersionLUjiAduruSiyL3sQPQ7SCkqf10eVxTsHNuP6kSAi3Y": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ImportFileParserLambdaFunction"
         },
-        "CodeSha256": "iMH/FPmTnLTO3QDGgWwYH0NfRLCf+WWzHJ3YzotJwTc="
+        "CodeSha256": "9Vu/hSBD6jxSVgWjVSGBQNBybrLRqRtXHpikePf+Qu8="
       }
     },
     "ImportFileParserCustomS31": {
@@ -392,7 +401,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/import-service-test123/dev/1659012283704-2022-07-28T12:44:43.704Z/custom-resources.zip"
+          "S3Key": "serverless/import-service-test123/dev/1660660665503-2022-08-16T14:37:45.503Z/custom-resources.zip"
         },
         "FunctionName": "import-service-test123-dev-custom-resource-existing-s3",
         "Handler": "s3/handler.handler",
@@ -478,52 +487,13 @@
             ]
           }
         },
-        "MethodResponses": [],
-        "RequestValidatorId": {
-          "Ref": "ApiGatewayImportservicetest123RequestValidator"
-        },
-        "RequestModels": {
-          "application/json": {
-            "Ref": "ApiGatewayMethodImportGetApplicationJsonModel"
-          }
-        }
+        "MethodResponses": []
       },
       "DependsOn": [
         "ImportProductsFileLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayImportservicetest123RequestValidator": {
-      "Type": "AWS::ApiGateway::RequestValidator",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiGatewayRestApi"
-        },
-        "ValidateRequestBody": true,
-        "ValidateRequestParameters": true,
-        "Name": "import-service-test123-dev | Validate request body and querystring parameters"
-      }
-    },
-    "ApiGatewayMethodImportGetApplicationJsonModel": {
-      "Type": "AWS::ApiGateway::Model",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiGatewayRestApi"
-        },
-        "ContentType": "application/json",
-        "Schema": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "name"
-          ]
-        }
-      }
-    },
-    "ApiGatewayDeployment1659012282719": {
+    "ApiGatewayDeployment1660660664529": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -585,7 +555,7 @@
     "ImportProductsFileLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ImportProductsFileLambdaVersionhcXwpQWKJp31OQMtOqKonqmqfl0EVvF8imFiL0Qmg"
+        "Ref": "ImportProductsFileLambdaVersion8kar5seMUP3Bg5943GEUDTPRZFHvRBecxULFEyVV0k"
       },
       "Export": {
         "Name": "sls-import-service-test123-dev-ImportProductsFileLambdaFunctionQualifiedArn"
@@ -594,7 +564,7 @@
     "ImportFileParserLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ImportFileParserLambdaVersion3g56Hr8eZ2eWsJAi0v3zPHNM0T4ukrqZOJmalqZ3pE"
+        "Ref": "ImportFileParserLambdaVersionLUjiAduruSiyL3sQPQ7SCkqf10eVxTsHNuP6kSAi3Y"
       },
       "Export": {
         "Name": "sls-import-service-test123-dev-ImportFileParserLambdaFunctionQualifiedArn"

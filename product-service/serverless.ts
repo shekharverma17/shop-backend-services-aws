@@ -4,6 +4,8 @@ import hello from '@functions/hello';
 import getProductsList from '@functions/getProductsList';
 import getProductsById from '@functions/getProductsById';
 import createProductHandler from '@functions/createProduct'
+import catalogBatchProcess from '@functions/catalogBatchProcess'
+
 const serverlessConfiguration: AWS = {
   service: 'product-service',
   frameworkVersion: '3',
@@ -17,6 +19,9 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      PRODUCTS_TOPIC_ARN: {
+        Ref: 'ProductsTopic'
+      },
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       DB_NAME: 'cloud_x',
       DB_USER: 'postgres_admin',
@@ -25,9 +30,16 @@ const serverlessConfiguration: AWS = {
       DB_HOST: 'cloudx-aws-db.cdduwpppdgo1.us-east-1.rds.amazonaws.com',
   
     },
+    iamRoleStatements: [
+     {
+      Effect: 'Allow',
+      Action: ['sns:*'],
+      Resource: ['arn:aws:sns:us-east-1:003374823954:createProductTopic']
+     },
+     ]
   },
   // import the function via paths
-  functions: { hello, getProductsList, getProductsById, createProductHandler },
+  functions: { hello, getProductsList, getProductsById, createProductHandler, catalogBatchProcess },
   package: { individually: true },
   custom: {
     esbuild: {
@@ -40,6 +52,44 @@ const serverlessConfiguration: AWS = {
       platform: 'node',
       concurrency: 10,
     },
+  },
+  resources:{
+    Resources: {
+      ProductQueue: {
+				Type: "AWS::SQS::Queue",
+				Properties: {
+					QueueName: 'catalogItemsQueue',
+          ReceiveMessageWaitTimeSeconds: 20,
+				},
+			},
+      ProductsTopic:{
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'createProductTopic'
+        },         
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'shekhar17verma@gmail.com',
+          Protocol: 'email',
+          TopicArn: { Ref: 'ProductsTopic' },
+        },
+      },  
+      SNSSubscriptionPriceMore1000: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'shekhar_verma@epam.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'ProductsTopic',
+          },
+          FilterPolicy: {
+            price: [{ numeric: ['>=', 1000] }],
+          },
+        },
+      }, 
+    }
   },
 };
 

@@ -3,7 +3,10 @@ import { middyfy } from '@libs/lambda';
 
 import schema from './schema';
 import AWS from 'aws-sdk';
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 const s3 = new AWS.S3({ region: 'us-east-1' });
+//const sqs = new SQSClient({ region: 'us-east-1' });
+
 const BUCKET = 'node-js-aws-s3-task5'
 import csv from 'csv-parser';
 
@@ -15,6 +18,8 @@ const importFileParser: ValidatedEventAPIGatewayProxyEvent<typeof schema> = asyn
 const bucketName = BUCKET
 const uploadFolderName = 'uploaded'
 const parsedForlderName = 'parsed'
+const sqs = new AWS.SQS();
+const QueueUrl =  process.env.SQS_QUEUE_URL
 
         const fileRecords = event.Records.filter(
             (record) => !!record.s3.object.size
@@ -48,13 +53,21 @@ const parsedForlderName = 'parsed'
             await new Promise((resolve, reject) => {
                 csvParsingStream
                     .on("data", (data) => {
-                        console.log(
-                            JSON.stringify({
-                                Bucket: bucketName,
-                                Key: objectKey,
-                                ParsedRow: data,
-                            })
-                        );
+                        console.log(JSON.stringify({Bucket: bucketName, Key: objectKey, ParsedRow: data, }) );
+                        sqs.sendMessage(
+                            {
+                              QueueUrl,
+                              MessageBody: JSON.stringify(data),
+                            },
+                            (error) => {
+                              if (error) {
+                                console.log(`Error sending message: ${error}`);
+                              } else {
+                                console.log(`Message sent to SQS: ${JSON.stringify(data)}`);
+                              }
+                            }
+                          )
+
                     }).on('end', async () => {
                             console.log(`Copy from ${BUCKET}/${record.s3.object.key}`);                   
                             await s3.copyObject({

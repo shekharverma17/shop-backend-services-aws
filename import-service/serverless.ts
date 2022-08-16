@@ -19,6 +19,7 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      SQS_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/003374823954/catalogItemsQueue"
     },
     iamRoleStatements: [
       {
@@ -36,7 +37,13 @@ const serverlessConfiguration: AWS = {
       Action: ['s3:PutBucketNotification'],
       Resource: ['*']
      },
+     {
+      Effect: 'Allow',
+      Action: ['sqs:*'],
+      Resource: ['arn:aws:sqs:us-east-1:003374823954:catalogItemsQueue']
+     },
      ]
+
   },
   // import the function via paths
   functions: { importProductsFile, importFileParser },
