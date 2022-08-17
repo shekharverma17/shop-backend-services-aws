@@ -22,7 +22,6 @@ const createProductHandler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = 
   try {
 
     const product = await createProductService(productData);
-    console.log("======product=====", product)
     if(product.length){
       return successResponse(product, 200)
     }

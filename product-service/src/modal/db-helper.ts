@@ -1,10 +1,11 @@
 const { Pool } = require('pg')
 const DBconnect = async () => {
+
   const pool = new Pool({
-    host: process.env.HOST,
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
@@ -43,6 +44,7 @@ async function dbQuery(q) {
         result = await client.query(`INSERT INTO products (title, description, price) VALUES ($1, $2, $3) RETURNING *`, [title, description, price])
         const { rows } = result
         await client.query(`INSERT INTO stocks (product_id, count) VALUES ($1, $2) RETURNING *`, [rows[0].id, count])
+        console.log(`Update Stock Count. Product(id): ${rows[0].id}, Count: ${count}`)
         await client.query('COMMIT')
       } catch (error) {
         await client.query('ROLLBACK')

@@ -1,16 +1,11 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
-
 import schema from './schema';
 import AWS from 'aws-sdk';
-import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 const s3 = new AWS.S3({ region: 'us-east-1' });
-//const sqs = new SQSClient({ region: 'us-east-1' });
-
 const BUCKET = 'node-js-aws-s3-task5'
 import csv from 'csv-parser';
 
-//serverless invoke local --function importFileParser --data '{ "queryStringParameters": {"name":"product.csv"}}'
 const importFileParser: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
     try {
         console.log(`Lambda invocation with: ${JSON.stringify(event)}`);

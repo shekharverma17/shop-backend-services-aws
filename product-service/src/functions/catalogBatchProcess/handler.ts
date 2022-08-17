@@ -5,12 +5,12 @@ import schema from './schema';
 import { createProductService } from '../../services/product-service'
 
 const catalogBatchProcess: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+  console.log(`sqs event: ${JSON.stringify(event)}`)
   const sns = new SNSClient({ region: 'us-east-1' });
-  console.log('sqs event', event)
   try {
     for (let record of event.Records) {
       const newProductData = JSON.parse(record.body);
-      console.log(newProductData);
+      console.log(`sqs event Product Data: ${JSON.stringify(newProductData)}`)
       await createProductService(newProductData);
 
       await sns.send(new PublishCommand({
