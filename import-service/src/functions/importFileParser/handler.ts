@@ -86,7 +86,12 @@ const QueueUrl =  process.env.SQS_QUEUE_URL
             });
         }
         return {
-            statusCode: 200
+            statusCode: 200,
+            headers: {
+              'Access-Control-Allow-Methods': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Access-Control-Allow-Origin': '*'
+               },
             }
     } catch (error) {
         console.log(`

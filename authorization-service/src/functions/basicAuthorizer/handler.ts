@@ -3,33 +3,26 @@ import { middyfy } from '@libs/lambda';
 
 const basicAuthorizer: ValidatedEventAPIGatewayProxyEvent = async (event) => {
   console.log(`Lambda invocation with: ${JSON.stringify(event)}`);
-// //{
-//   "type":"TOKEN",
-//   "authorizationToken":"allow",
-//   "methodArn":"arn:aws:execute-api:us-west-2:123456789012:ymy8tbxw7b/*/GET/"
-// }
-try {
+  try {
         const { type, authorizationToken, methodArn } = event;
         console.log('Event with token', authorizationToken);
 
         if (type !== 'TOKEN') {
           throw new Error('Error: token value is missing');
         }
-
-        const encodedCredentials = authorizationToken.split(' ')[1];
+        const encodedCredentials = authorizationToken.replace('Bearer ', '');
         const buff = Buffer.from(encodedCredentials, 'base64');
         const credentials = buff.toString('utf-8').split(':');
         const username = credentials[0];
         const password = credentials[1];
 
-        console.log(`username: ${username} ,password:  ${password}`);
-
         const isCredentialsValid = username === process.env.AUTH_NAME && password === process.env.AUTH_PASSWORD;
 
         const effect = isCredentialsValid ? 'Allow' : 'Deny';
-
+        console.log(`Generating policy...`)
         return generatePolicy(encodedCredentials, methodArn, effect);
     } catch(error) {
+      console.log(`ERROR: ${JSON.stringify(error)}`)
       return {
         statusCode: 403,
         error: error.message,
