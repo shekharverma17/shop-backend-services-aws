@@ -9,7 +9,8 @@ import catalogBatchProcess from '@functions/catalogBatchProcess'
 const serverlessConfiguration: AWS = {
   service: 'product-service',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild'],
+  plugins: ['serverless-esbuild', 'serverless-dotenv-plugin'],
+  useDotenv: true,
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
@@ -23,12 +24,6 @@ const serverlessConfiguration: AWS = {
         Ref: 'ProductsTopic'
       },
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      DB_NAME: 'cloud_x',
-      DB_USER: 'postgres_admin',
-      DB_PASS: 'rds097428',
-      DB_PORT: '5432',
-      DB_HOST: 'cloudx-aws-db.cdduwpppdgo1.us-east-1.rds.amazonaws.com',
-  
     },
     iamRoleStatements: [
      {

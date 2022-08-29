@@ -3,6 +3,7 @@ import { middyfy } from '@libs/lambda';
 import schema from './schema';
 import AWS from 'aws-sdk';
 const s3 = new AWS.S3({ region: 'us-east-1' });
+const sqs = new AWS.SQS();
 const BUCKET = 'node-js-aws-s3-task5'
 import csv from 'csv-parser';
 
@@ -10,11 +11,10 @@ const importFileParser: ValidatedEventAPIGatewayProxyEvent<typeof schema> = asyn
     try {
         console.log(`Lambda invocation with: ${JSON.stringify(event)}`);
         const s3Instance = s3;
-const bucketName = BUCKET
-const uploadFolderName = 'uploaded'
-const parsedForlderName = 'parsed'
-const sqs = new AWS.SQS();
-const QueueUrl =  process.env.SQS_QUEUE_URL
+        const bucketName = BUCKET
+        const uploadFolderName = 'uploaded'
+        const parsedForlderName = 'parsed'
+        const QueueUrl =  process.env.SQS_QUEUE_URL
 
         const fileRecords = event.Records.filter(
             (record) => !!record.s3.object.size
